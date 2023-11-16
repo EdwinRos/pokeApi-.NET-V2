@@ -1,0 +1,92 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@using Newtonsoft.Json;
+
+
+<div class="container">
+    <div class="row align-content-center justify-content-center">
+        <div class="col-md-3 text-center m-5">
+            <p class="lead">Busca un Pokémon</p>
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar por nombre">
+        </div>
+        <div class="col-md-3 text-center">
+            <h1 class="h1">Escoge tu equipo Pokémon</h1>
+            <p class="lead">Puedes escoger Pokémon de la lista hasta un máximo de 6 integrantes</p>
+
+            <ul id="userTeamList" class="list-group">
+                @*En esta parte se van a mostrar los integrantes del equipo*@
+            </ul>
+        </div>
+    </div>
+
+    <hr />
+    <div class="row">
+        @foreach (var pokemon in Model)
+        {
+            <div class="col-md-4 pokemon-card">
+                <div class="card m-3" style="width: 18rem;">
+                    <img src="@pokemon.imageUrl" class="card-img-top border-bottom-0" alt="...">
+                    <div class="card-body align-content-center justify-content-center">
+                        <h5 class="card-title">@pokemon.name</h5>
+                        <div class="row">
+                            <div class="col">
+                                <ul>
+                                    @foreach (var type in pokemon.Tipos)
+                                    {
+                                        <li class="lead">Tipo: @type</li>
+                                    }
+                                </ul>
+                                
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <form method="post" asp-action="GetPokemonDetail" asp-controller="Home">
+                                    <!-- Utilizando asp-for para asociar el valor del modelo con el input -->
+                                    <input hidden type="text" name="pokemonObj" value="@JsonConvert.SerializeObject(pokemon)" />
+
+                                    <!-- Botón que envía el formulario al controlador -->
+                                    <button class="btn btn-primary w-auto" type="submit">Ver mas</button>
+                                </form>
+                
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-primary" onclick="addToTeam('@pokemon.name')">Agregar a equipo</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+
+    <!-- Navegación de página -->
+    <div style="text-align: center; margin-top: 20px;">
+        <!-- Enlace para la página Anterior -->
+        @if (ViewBag.CurrentPage > 1)
+        {
+            <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })">&laquo; Anterior</a>
+        }
+
+        <!-- Números de página -->
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            @if (i == ViewBag.CurrentPage)
+            {
+                <span>@i</span>
+            }
+            else
+            {
+                <a href="@Url.Action("Index", new { page = i })">@i</a>
+            }
+        }
+
+        <!-- Enlace para la página Siguiente -->
+        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+        {
+            <a href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">Siguiente &raquo;</a>
+        }
+    </div>
+</div>

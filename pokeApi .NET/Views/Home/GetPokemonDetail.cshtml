@@ -1,0 +1,33 @@
+﻿@using Newtonsoft.Json;
+@using pokeApi_.NET.Models.Pokemon;
+@{
+    string obj =  ViewBag.PokemonDetail;
+
+    var Pokemon = JsonConvert.DeserializeObject<PokemonComplete>(obj);
+}
+
+<h1 class="h1">Detalles del pokemon</h1>
+
+
+<div class="container">
+    <div class="row">
+        <!-- Columna Izquierda - Imagen del Producto -->
+        <div class="col-lg-6">
+            <img src="@Pokemon.imageUrl" class="img-fluid" width="400" height="400" alt="Product Image">
+        </div>
+
+        <!-- Columna Derecha - Información del Producto -->
+        <div class="col-lg-6 product-info">
+            <h2>Nombre del Pokemon: @Pokemon.name</h2>
+            <h4>Características:</h4>
+            <ul>
+                @foreach(var tipo in Pokemon.Tipos)
+                {
+                    <li>Typo: @tipo</li>
+                }
+            </ul>
+            <button class="btn btn-dark" onclick="addToTeam('@Pokemon.name')">Agregar a equipo</button>
+        </div>
+    </div>
+</div>
+
